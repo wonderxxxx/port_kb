@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# ML models (embedding models downloaded to project root/models/embedding)
+models/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

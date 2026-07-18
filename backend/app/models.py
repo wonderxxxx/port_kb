@@ -2,6 +2,13 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from pgvector.sqlalchemy import Vector
 from .database import Base
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# 从环境变量读取向量维度
+VECTOR_DIMENSION = int(os.getenv("VECTOR_DIMENSION", 384))
 
 
 class Document(Base):
@@ -23,5 +30,5 @@ class DocumentChunk(Base):
     document_id = Column(Integer, ForeignKey("documents.id"), nullable=False)
     chunk_text = Column(Text, nullable=False)
     chunk_index = Column(Integer)
-    embedding = Column(Vector(384))
+    embedding = Column(Vector(VECTOR_DIMENSION))
     created_at = Column(DateTime(timezone=True), server_default=func.now())

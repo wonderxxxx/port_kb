@@ -11,9 +11,20 @@ node_modules
 dist
 dist-ssr
 *.local
+.vite/
 
 # ML models (embedding models downloaded to project root/models/embedding)
 models/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+.env.local
 
 # Editor directories and files
 .vscode/*

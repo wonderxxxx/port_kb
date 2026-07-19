@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Send, Mic, Volume2, Star, ThumbsUp } from "lucide-react";
 
@@ -15,43 +15,15 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
-  const [greetingLoading, setGreetingLoading] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechRate, setSpeechRate] = useState(1);
 
-  useEffect(() => {
-    const fetchGreeting = async () => {
-      try {
-        const response = await axios.get(`${API_BASE}/qa/greeting`);
-        console.log("Greeting API response:", response.data);
-        const greetingContent = response.data.greeting || "哥哥好～（歪头）我是港航智能助手，可以帮你查水位、船舶、泊位、法规这些哦～";
-        const greetingMessage: Message = {
-          id: 1,
-          role: "assistant",
-          content: greetingContent,
-          timestamp: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
-        };
-        setMessages([greetingMessage]);
-      } catch (error) {
-        console.error("Failed to fetch greeting:", error);
-        const fallbackMessage: Message = {
-          id: 1,
-          role: "assistant",
-          content: "哥哥好～（歪头）我是港航智能助手，可以帮你查水位、船舶、泊位、法规这些哦～",
-          timestamp: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
-        };
-        setMessages([fallbackMessage]);
-      } finally {
-        setGreetingLoading(false);
-      }
-    };
-    fetchGreeting();
-  }, []);
+
 
 
 
   const handleSend = async () => {
-    if (!inputValue.trim() || loading || greetingLoading) return;
+    if (!inputValue.trim() || loading) return;
 
     const userMessage: Message = {
       id: Date.now(),
@@ -187,8 +159,8 @@ export default function Home() {
               </div>
               <button
                 onClick={handleSend}
-                disabled={loading || greetingLoading || !inputValue.trim()}
-                title={greetingLoading ? "请稍后，正在加载问候语..." : loading ? "请稍后，正在思考中..." : undefined}
+                disabled={loading || !inputValue.trim()}
+                title={loading ? "请稍后，正在思考中..." : undefined}
                 className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Send className="h-5 w-5" />

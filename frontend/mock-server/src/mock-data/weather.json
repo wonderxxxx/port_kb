@@ -1,0 +1,21 @@
+{
+  "current": {
+    "rainfall": { "region": "杭金衢地区", "value": 52.8, "unit": "mm", "period": "过去24小时", "level": "暴雨", "levelColor": "orange" },
+    "forecast": { "region": "杭金衢地区", "value": 35.0, "unit": "mm", "period": "未来6小时", "level": "大雨", "levelColor": "yellow" },
+    "wind": { "speed": 8.5, "gust": 14.2, "direction": "东北风", "level": "5-6级" },
+    "warning": { "type": "暴雨黄色预警", "level": "黄色", "publishTime": "2026-06-17T09:30:00", "content": "预计未来12小时，杭金衢地区有暴雨，局地大暴雨，请做好防汛准备" },
+    "temperature": 28.5,
+    "humidity": 85,
+    "pressure": 1002.3
+  },
+  "forecast24h": [
+    { "time": "2026-06-17T12:00", "rainfall": 8.2, "wind": 7.5, "temperature": 29.0 },
+    { "time": "2026-06-17T15:00", "rainfall": 15.5, "wind": 9.0, "temperature": 28.0 },
+    { "time": "2026-06-17T18:00", "rainfall": 20.0, "wind": 10.5, "temperature": 26.5 },
+    { "time": "2026-06-17T21:00", "rainfall": 10.0, "wind": 8.0, "temperature": 25.0 },
+    { "time": "2026-06-18T00:00", "rainfall": 5.0, "wind": 6.5, "temperature": 24.0 },
+    { "time": "2026-06-18T03:00", "rainfall": 3.0, "wind": 5.5, "temperature": 23.5 },
+    { "time": "2026-06-18T06:00", "rainfall": 1.5, "wind": 4.0, "temperature": 23.0 },
+    { "time": "2026-06-18T09:00", "rainfall": 0.5, "wind": 3.5, "temperature": 24.5 }
+  ]
+}

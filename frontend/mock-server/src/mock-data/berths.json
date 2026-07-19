@@ -1,0 +1,94 @@
+{
+  "berths": [
+    {
+      "id": "B001",
+      "name": "龙游港区锚地",
+      "category": "锚地",
+      "district": "龙游",
+      "lat": 29.217,
+      "lng": 119.465,
+      "totalSlots": 15,
+      "occupiedSlots": 10,
+      "riskLevel": "medium",
+      "suitableTonnage": [
+        1000,
+        5000
+      ]
+    },
+    {
+      "id": "B002",
+      "name": "衢江服务区",
+      "category": "服务区",
+      "district": "衢江",
+      "lat": 29.1945,
+      "lng": 119.496,
+      "totalSlots": 20,
+      "occupiedSlots": 14,
+      "riskLevel": "medium",
+      "suitableTonnage": [
+        500,
+        3000
+      ]
+    },
+    {
+      "id": "B003",
+      "name": "兰溪执法码头",
+      "category": "码头",
+      "district": "兰溪",
+      "lat": 29.205,
+      "lng": 119.475,
+      "totalSlots": 8,
+      "occupiedSlots": 5,
+      "riskLevel": "low",
+      "suitableTonnage": [
+        500,
+        2000
+      ]
+    },
+    {
+      "id": "B004",
+      "name": "姚家船闸等待区",
+      "category": "等待区",
+      "district": "兰溪",
+      "lat": 29.2,
+      "lng": 119.486,
+      "totalSlots": 10,
+      "occupiedSlots": 3,
+      "riskLevel": "low",
+      "suitableTonnage": [
+        1000,
+        4000
+      ]
+    },
+    {
+      "id": "B005",
+      "name": "龙游应急停泊点",
+      "category": "应急点",
+      "district": "龙游",
+      "lat": 29.2145,
+      "lng": 119.4685,
+      "totalSlots": 5,
+      "occupiedSlots": 2,
+      "riskLevel": "high",
+      "suitableTonnage": [
+        500,
+        3000
+      ]
+    },
+    {
+      "id": "B006",
+      "name": "桥区下游锚地",
+      "category": "锚地",
+      "district": "衢江",
+      "lat": 29.1915,
+      "lng": 119.500,
+      "totalSlots": 12,
+      "occupiedSlots": 8,
+      "riskLevel": "medium",
+      "suitableTonnage": [
+        1000,
+        5000
+      ]
+    }
+  ]
+}

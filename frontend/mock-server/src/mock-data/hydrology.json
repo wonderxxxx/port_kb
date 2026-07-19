@@ -1,0 +1,21 @@
+{
+  "stations": [
+    { "id": "H001", "name": "兰溪水文站", "river": "衢江", "lat": 29.2055, "lng": 119.4755, "warningLevel": 31.0, "dangerLevel": 33.5 },
+    { "id": "H002", "name": "衢江阶梯枢纽", "river": "衢江", "lat": 29.1910, "lng": 119.5010, "warningLevel": 28.0, "dangerLevel": 30.0 },
+    { "id": "H003", "name": "龙游水文站", "river": "衢江", "lat": 29.2180, "lng": 119.4640, "warningLevel": 30.5, "dangerLevel": 32.8 },
+    { "id": "H004", "name": "塔底电站", "river": "衢江", "lat": 29.1860, "lng": 119.5035, "warningLevel": 27.5, "dangerLevel": 29.5 }
+  ],
+  "currentData": [
+    { "stationId": "H001", "level": 28.65, "velocity": 2.8, "flow": 1850, "time": "2026-06-17T10:00:00", "trend": "上涨" },
+    { "stationId": "H002", "level": 26.80, "velocity": 3.2, "flow": 2200, "time": "2026-06-17T10:00:00", "trend": "平稳" },
+    { "stationId": "H003", "level": 27.20, "velocity": 2.5, "flow": 1600, "time": "2026-06-17T10:00:00", "trend": "回落" },
+    { "stationId": "H004", "level": 25.10, "velocity": 2.0, "flow": 1400, "time": "2026-06-17T10:00:00", "trend": "平稳" }
+  ],
+  "floodForecast": {
+    "station": "衢江阶梯枢纽",
+    "currentFlow": 2200,
+    "forecastFlow": 2800,
+    "forecastTime": "2026-06-17T16:00:00",
+    "warningLevel": "黄色"
+  }
+}

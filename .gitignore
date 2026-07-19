@@ -7,30 +7,66 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node.js
 node_modules
 dist
 dist-ssr
 *.local
 .vite/
 
+# TypeScript
+*.tsbuildinfo
+
 # ML models (embedding models downloaded to project root/models/embedding)
-models/
+/models/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.Python
+
+# Python virtual environments
+venv/
+.venv/
+ENV/
+env/
+
+# Python packaging
+*.egg-info/
+.eggs/
+build/
+dist/
+*.egg
+
+# Python tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+
+# Test coverage
+coverage/
+.coverage
+.coverage.*
+htmlcov/
+
+# Database
+*.sqlite3
+*.db
 
 # Environment variables
 .env
 .env.local
+.env.*.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj

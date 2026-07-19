@@ -1,0 +1,36 @@
+{
+  "ships": [
+    { "id": "S001", "mmsi": "413798201", "name": "浙海通008", "type": "集装箱船", "power": 1800, "tonnage": 3000, "length": 85, "draft": 3.2, "owner": "浙江通达航运", "phone": "13805710001", "dangerous": false },
+    { "id": "S002", "mmsi": "413798502", "name": "浙金航016", "type": "货船", "power": 1200, "tonnage": 1800, "length": 62, "draft": 2.8, "owner": "金华航运公司", "phone": "13805790002", "dangerous": false },
+    { "id": "S003", "mmsi": "413799103", "name": "衢江货0188", "type": "散货船", "power": 2200, "tonnage": 4500, "length": 95, "draft": 3.8, "owner": "衢州港务", "phone": "13905700003", "dangerous": false },
+    { "id": "S004", "mmsi": "413796804", "name": "龙游拖001", "type": "拖船", "power": 3500, "tonnage": 800, "length": 35, "draft": 2.2, "owner": "龙游港航", "phone": "13505700004", "dangerous": false },
+    { "id": "S005", "mmsi": "413798905", "name": "浙海油002", "type": "油船", "power": 1500, "tonnage": 2000, "length": 70, "draft": 3.5, "owner": "浙江石化物流", "phone": "13705710005", "dangerous": true },
+    { "id": "S006", "mmsi": "413797206", "name": "金航工003", "type": "工程船", "power": 800, "tonnage": 1200, "length": 45, "draft": 2.5, "owner": "金华航道工程", "phone": "13605790006", "dangerous": false },
+    { "id": "S007", "mmsi": "413799807", "name": "浙西客001", "type": "客船", "power": 2000, "tonnage": 1500, "length": 55, "draft": 2.0, "owner": "衢州旅游航运", "phone": "13805700007", "dangerous": false },
+    { "id": "S008", "mmsi": "413795408", "name": "兰溪渔运002", "type": "渔船", "power": 400, "tonnage": 200, "length": 18, "draft": 0.8, "owner": "兰溪渔业合作社", "phone": "13305790008", "dangerous": false },
+    { "id": "S009", "mmsi": "413794209", "name": "桐庐砂石005", "type": "砂石船", "power": 1100, "tonnage": 2500, "length": 68, "draft": 3.0, "owner": "桐庐矿业运输", "phone": "13905710009", "dangerous": false },
+    { "id": "S010", "mmsi": "413798310", "name": "浙航危化001", "type": "化学品船", "power": 1600, "tonnage": 2200, "length": 72, "draft": 3.4, "owner": "浙江危化物流", "phone": "13605710010", "dangerous": true },
+    { "id": "S011", "mmsi": "413797611", "name": "富春江货012", "type": "货船", "power": 1300, "tonnage": 2000, "length": 65, "draft": 2.9, "owner": "富阳航运", "phone": "13806810011", "dangerous": false },
+    { "id": "S012", "mmsi": "413796112", "name": "金航客渡008", "type": "渡船", "power": 600, "tonnage": 300, "length": 22, "draft": 1.0, "owner": "金华渡口管理", "phone": "13506890012", "dangerous": false },
+    { "id": "S013", "mmsi": "413799513", "name": "浙海集003", "type": "集装箱船", "power": 2500, "tonnage": 5000, "length": 100, "draft": 4.0, "owner": "浙江远洋物流", "phone": "13705710013", "dangerous": false },
+    { "id": "S014", "mmsi": "413795214", "name": "衢江散006", "type": "散货船", "power": 900, "tonnage": 1500, "length": 55, "draft": 2.6, "owner": "衢江航运", "phone": "13605700014", "dangerous": false },
+    { "id": "S015", "mmsi": "413798015", "name": "建德货工007", "type": "工程船", "power": 700, "tonnage": 1000, "length": 40, "draft": 2.3, "owner": "建德港航工程", "phone": "13805710015", "dangerous": false }
+  ],
+  "positions": [
+    { "shipId": "S001", "lat": 29.2010, "lng": 119.4840, "heading": 45, "speed": 8.2, "status": "航行中", "destination": "龙游港区", "eta": "2026-06-17T14:00:00" },
+    { "shipId": "S002", "lat": 29.2050, "lng": 119.4760, "heading": 315, "speed": 0, "status": "锚泊", "destination": "兰溪锚地", "eta": null },
+    { "shipId": "S003", "lat": 29.1945, "lng": 119.4960, "heading": 60, "speed": 10.5, "status": "航行中", "destination": "杭州方向", "eta": "2026-06-17T16:30:00" },
+    { "shipId": "S004", "lat": 29.2170, "lng": 119.4650, "heading": 180, "speed": 0, "status": "作业中", "destination": "衢江枢纽", "eta": null },
+    { "shipId": "S005", "lat": 29.1970, "lng": 119.4910, "heading": 310, "speed": 6.5, "status": "航行中", "destination": "衢州港区", "eta": "2026-06-17T15:45:00" },
+    { "shipId": "S006", "lat": 29.2075, "lng": 119.4730, "heading": 135, "speed": 0, "status": "锚泊", "destination": "龙游服务区", "eta": null },
+    { "shipId": "S007", "lat": 29.2130, "lng": 119.4690, "heading": 60, "speed": 12.0, "status": "航行中", "destination": "金华游船码头", "eta": "2026-06-17T13:30:00" },
+    { "shipId": "S008", "lat": 29.2090, "lng": 119.4720, "heading": 225, "speed": 5.0, "status": "捕鱼作业", "destination": null, "eta": null },
+    { "shipId": "S009", "lat": 29.2020, "lng": 119.4810, "heading": 40, "speed": 7.8, "status": "航行中", "destination": "桐庐方向", "eta": "2026-06-17T17:00:00" },
+    { "shipId": "S010", "lat": 29.1955, "lng": 119.4940, "heading": 135, "speed": 9.0, "status": "航行中", "destination": "兰溪化工码头", "eta": "2026-06-17T14:30:00" },
+    { "shipId": "S011", "lat": 29.1995, "lng": 119.4860, "heading": 225, "speed": 0, "status": "锚泊", "destination": "姚家船闸等待区", "eta": null },
+    { "shipId": "S012", "lat": 29.2065, "lng": 119.4745, "heading": 90, "speed": 3.5, "status": "渡运中", "destination": "兰溪-龙游", "eta": "2026-06-17T12:15:00" },
+    { "shipId": "S013", "lat": 29.2030, "lng": 119.4790, "heading": 315, "speed": 11.0, "status": "航行中", "destination": "上海港", "eta": "2026-06-18T08:00:00" },
+    { "shipId": "S014", "lat": 29.1915, "lng": 119.5000, "heading": 90, "speed": 0, "status": "锚泊", "destination": "衢江锚地", "eta": null },
+    { "shipId": "S015", "lat": 29.2150, "lng": 119.4670, "heading": 270, "speed": 2.0, "status": "作业中", "destination": "桥区施工点", "eta": null }
+  ]
+}

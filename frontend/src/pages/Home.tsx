@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Send, Mic, Volume2, Star, ThumbsUp, MessageCircle } from "lucide-react";
+import { Send, Mic, Volume2, Star, ThumbsUp } from "lucide-react";
 
 const API_BASE = "http://localhost:8000/api";
 
@@ -12,29 +12,46 @@ interface Message {
 }
 
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      role: "assistant",
-      content: "您好！我是港航智能助手。可查询水位、船舶、泊位、法规等信息，也可引导执法流程。您可以直接打字或使用语音输入。",
-      timestamp: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [greetingLoading, setGreetingLoading] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechRate, setSpeechRate] = useState(1);
 
-  const quickQuestions = [
-    "今天兰溪水位多少？",
-    "衢江有几艘船？",
-    "桥区追越怎么处罚？",
-    "龙游锚地还有泊位吗？",
-    "姚家船闸排队多少？",
-  ];
+  useEffect(() => {
+    const fetchGreeting = async () => {
+      try {
+        const response = await axios.get(`${API_BASE}/qa/greeting`);
+        console.log("Greeting API response:", response.data);
+        const greetingContent = response.data.greeting || "哥哥好～（歪头）我是港航智能助手，可以帮你查水位、船舶、泊位、法规这些哦～";
+        const greetingMessage: Message = {
+          id: 1,
+          role: "assistant",
+          content: greetingContent,
+          timestamp: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
+        };
+        setMessages([greetingMessage]);
+      } catch (error) {
+        console.error("Failed to fetch greeting:", error);
+        const fallbackMessage: Message = {
+          id: 1,
+          role: "assistant",
+          content: "哥哥好～（歪头）我是港航智能助手，可以帮你查水位、船舶、泊位、法规这些哦～",
+          timestamp: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
+        };
+        setMessages([fallbackMessage]);
+      } finally {
+        setGreetingLoading(false);
+      }
+    };
+    fetchGreeting();
+  }, []);
+
+
 
   const handleSend = async () => {
-    if (!inputValue.trim() || loading) return;
+    if (!inputValue.trim() || loading || greetingLoading) return;
 
     const userMessage: Message = {
       id: Date.now(),
@@ -43,7 +60,7 @@ export default function Home() {
       timestamp: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
     };
 
-    setMessages([...messages, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInputValue("");
     setLoading(true);
 
@@ -56,21 +73,16 @@ export default function Home() {
       const assistantMessage: Message = {
         id: Date.now() + 1,
         role: "assistant",
-        content: response.data.answer,
+        content: response.data.answer || "抱歉，我暂时无法回答这个问题～（低头）",
         timestamp: new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
       };
 
-      setMessages([...messages, userMessage, assistantMessage]);
+      setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error("QA failed:", error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickQuestion = (question: string) => {
-    setInputValue(question);
-    handleSend();
   };
 
   const handleSpeech = () => {
@@ -158,17 +170,6 @@ export default function Home() {
           </div>
 
           <div className="p-4 border-t border-slate-200">
-            <div className="flex flex-wrap gap-2 mb-3">
-              {quickQuestions.map((question, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleQuickQuestion(question)}
-                  className="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                >
-                  {question}
-                </button>
-              ))}
-            </div>
 
             <div className="flex items-center space-x-3">
               <button className="p-2.5 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors">
@@ -186,7 +187,8 @@ export default function Home() {
               </div>
               <button
                 onClick={handleSend}
-                disabled={loading || !inputValue.trim()}
+                disabled={loading || greetingLoading || !inputValue.trim()}
+                title={greetingLoading ? "请稍后，正在加载问候语..." : loading ? "请稍后，正在思考中..." : undefined}
                 className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Send className="h-5 w-5" />

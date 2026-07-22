@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional, List
 
@@ -15,6 +15,7 @@ class DocumentResponse(BaseModel):
     filename: str
     filepath: str
     file_type: str
+    category: str
     created_at: datetime
     updated_at: Optional[datetime]
 
@@ -74,3 +75,36 @@ class SendMessageRequest(BaseModel):
     query: str
     conversation_id: int = None
     top_k: int = 5
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+
+class UserCreate(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
+    full_name: Optional[str] = None
+
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    full_name: Optional[str] = None
+    role: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str

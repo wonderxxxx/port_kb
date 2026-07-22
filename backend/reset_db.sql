@@ -18,6 +18,7 @@ CREATE TABLE documents (
     filepath VARCHAR(500) NOT NULL,
     content TEXT,
     file_type VARCHAR(50),
+    category VARCHAR(50) NOT NULL DEFAULT '法规',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE
 );

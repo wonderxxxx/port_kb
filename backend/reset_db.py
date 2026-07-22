@@ -44,6 +44,7 @@ def reset_database():
         print("2. 删除现有表...")
         cur.execute("DROP TABLE IF EXISTS messages CASCADE")
         cur.execute("DROP TABLE IF EXISTS conversations CASCADE")
+        cur.execute("DROP TABLE IF EXISTS users CASCADE")
         cur.execute("DROP TABLE IF EXISTS document_chunks CASCADE")
         cur.execute("DROP TABLE IF EXISTS documents CASCADE")
 
@@ -72,17 +73,32 @@ def reset_database():
             )
         """)
 
-        print("5. 创建 conversations 表...")
+        print("5. 创建 users 表...")
+        cur.execute("""
+            CREATE TABLE users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(100) NOT NULL UNIQUE,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                hashed_password VARCHAR(255) NOT NULL,
+                full_name VARCHAR(255),
+                role VARCHAR(50) DEFAULT 'user',
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        print("6. 创建 conversations 表...")
         cur.execute("""
             CREATE TABLE conversations (
                 id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                 title VARCHAR(255) NOT NULL,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             )
         """)
 
-        print("6. 创建 messages 表...")
+        print("7. 创建 messages 表...")
         cur.execute("""
             CREATE TABLE messages (
                 id SERIAL PRIMARY KEY,
@@ -93,10 +109,13 @@ def reset_database():
             )
         """)
 
-        print("7. 创建索引...")
+        print("8. 创建索引...")
         cur.execute("CREATE INDEX idx_document_chunks_document_id ON document_chunks(document_id)")
         cur.execute("CREATE INDEX idx_document_chunks_embedding ON document_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)")
         cur.execute("CREATE INDEX idx_messages_conversation_id ON messages(conversation_id)")
+        cur.execute("CREATE INDEX idx_users_username ON users(username)")
+        cur.execute("CREATE INDEX idx_users_email ON users(email)")
+        cur.execute("CREATE INDEX idx_conversations_user_id ON conversations(user_id)")
 
         cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
         tables = [t[0] for t in cur.fetchall()]

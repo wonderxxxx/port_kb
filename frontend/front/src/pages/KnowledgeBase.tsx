@@ -5,11 +5,12 @@ import { API_BASE } from '../lib/api';
 
 interface KnowledgeEntry { id:string;title:string;category:string;content:string;tags:string[];status:string;author:string;createdAt:string;updatedAt:string;fileName?:string;fileType?:string;fileSize?:string }
 const SUPPORTED_TYPES = '.txt,.md,.csv,.pdf,.doc,.docx,.html,.json,.xml';
+const KNOWLEDGE_CATEGORIES = ['法规', '案例', '文书'];
 
 export default function KnowledgeBase() {
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
   const [allEntries, setAllEntries] = useState<KnowledgeEntry[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>(KNOWLEDGE_CATEGORIES);
   const [filterCat, setFilterCat] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [keyword, setKeyword] = useState('');
@@ -18,6 +19,7 @@ export default function KnowledgeBase() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState('法规');
   const [toasts, setToasts] = useState<{id:number;message:string;type:string}[]>([]);
   const addToast = (m:string,t='success')=>{const id=Date.now();setToasts(p=>[...p,{id,message:m,type:t}]);setTimeout(()=>setToasts(p=>p.filter(x=>x.id!==id)),3000)};
 
@@ -30,6 +32,7 @@ export default function KnowledgeBase() {
       try {
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('category', uploadCategory);
         await fetch(`${API_BASE}/documents/upload`, {
           method:'POST', body: formData,
         });
@@ -48,7 +51,7 @@ export default function KnowledgeBase() {
       const newEntries: KnowledgeEntry[] = docs.map((doc:any) => ({
         id: String(doc.id),
         title: doc.filename,
-        category: doc.file_type || '法规',
+        category: doc.category || '法规',
         content: doc.filepath || '',
         tags: [doc.file_type?.toUpperCase() || ''],
         status: 'published',
@@ -60,8 +63,6 @@ export default function KnowledgeBase() {
       }));
       setAllEntries(newEntries);
       setEntries(newEntries);
-      const cats = [...new Set(newEntries.map(e => e.category))];
-      setCategories(cats);
     } catch {
       addToast('获取文档列表失败','error');
     }
@@ -146,26 +147,34 @@ export default function KnowledgeBase() {
       </div>
 
       {/* File upload zone */}
-      <div
-        onDragOver={e=>{e.preventDefault();setDragOver(true)}}
-        onDragLeave={()=>setDragOver(false)}
-        onDrop={e=>{e.preventDefault();handleFiles(e.dataTransfer.files)}}
-        className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${
-          dragOver?'border-blue-400 bg-blue-50':'border-slate-300 hover:border-blue-300 hover:bg-slate-50'
-        }`}
-        onClick={()=>document.getElementById('file-upload')?.click()}
-      >
-        <input id="file-upload" type="file" multiple accept={SUPPORTED_TYPES}
-          onChange={e=>e.target.files&&handleFiles(e.target.files)} className="hidden"/>
-        {uploading ? (
-          <div className="text-sm text-blue-500">正在上传解析文件...</div>
-        ) : (
-          <div>
-            <p className="text-sm text-slate-500 font-medium">拖拽文件到此处上传，或点击选择文件</p>
-            <p className="text-xs text-slate-400 mt-1">支持 Word (.doc/.docx) · Markdown (.md) · TXT · PDF · CSV · HTML · JSON · XML</p>
-            <p className="text-xs text-slate-400">文件自动解析为知识条目，最大 10MB</p>
-          </div>
-        )}
+      <div className="card">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-sm text-slate-500">上传分类:</span>
+          <select value={uploadCategory} onChange={e=>setUploadCategory(e.target.value)} className="px-3 py-1.5 border border-slate-200 rounded text-sm">
+            {KNOWLEDGE_CATEGORIES.map(c=>(<option key={c} value={c}>{c}</option>))}
+          </select>
+        </div>
+        <div
+          onDragOver={e=>{e.preventDefault();setDragOver(true)}}
+          onDragLeave={()=>setDragOver(false)}
+          onDrop={e=>{e.preventDefault();handleFiles(e.dataTransfer.files)}}
+          className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${
+            dragOver?'border-blue-400 bg-blue-50':'border-slate-300 hover:border-blue-300 hover:bg-slate-50'
+          }`}
+          onClick={()=>document.getElementById('file-upload')?.click()}
+        >
+          <input id="file-upload" type="file" multiple accept={SUPPORTED_TYPES}
+            onChange={e=>e.target.files&&handleFiles(e.target.files)} className="hidden"/>
+          {uploading ? (
+            <div className="text-sm text-blue-500">正在上传解析文件...</div>
+          ) : (
+            <div>
+              <p className="text-sm text-slate-500 font-medium">拖拽文件到此处上传，或点击选择文件</p>
+              <p className="text-xs text-slate-400 mt-1">支持 Word (.doc/.docx) · Markdown (.md) · TXT · PDF · CSV · HTML · JSON · XML</p>
+              <p className="text-xs text-slate-400">文件自动解析为知识条目，最大 10MB</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Entry list */}

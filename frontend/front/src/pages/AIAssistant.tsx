@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { StatusTag } from '../components/StatusBadge';
 import { IconDocument, IconWarning, IconCheck, IconSearch, IconAnchor, IconPlay, IconPlus, IconTrash2, IconMessageSquare } from '../components/Icons';
 import { API_BASE } from '../lib/api';
+import { useAuth } from '../context/AuthContext';
 
 interface ChatMessage { role: 'user' | 'assistant'; content: string; time: string; feedback?: 'up'|'down'; }
 interface SearchResult { type:string;title:string;url:string;time:string;relevance:number }
@@ -41,6 +42,9 @@ function getAnswer(q: string): string {
 }
 
 export default function AIAssistant() {
+  const { token } = useAuth();
+  const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+  
   const [tab, setTab] = useState<'chat'|'enforce'|'search'|'cross-modal'>('chat');
   // Chat
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -83,7 +87,7 @@ export default function AIAssistant() {
 
   const fetchConversations = async () => {
     try {
-      const res = await fetch(`${API_BASE}/qa/conversations`);
+      const res = await fetch(`${API_BASE}/qa/conversations`, { headers: authHeaders });
       const data = await res.json();
       setConversations(data);
     } catch (e) {
@@ -95,7 +99,7 @@ export default function AIAssistant() {
     try {
       const res = await fetch(`${API_BASE}/qa/conversations`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({ title: '新会话' })
       });
       const data = await res.json();
@@ -111,7 +115,7 @@ export default function AIAssistant() {
 
   const selectConversation = async (id: number) => {
     try {
-      const res = await fetch(`${API_BASE}/qa/conversations/${id}/messages`);
+      const res = await fetch(`${API_BASE}/qa/conversations/${id}/messages`, { headers: authHeaders });
       const data = await res.json();
       setMessages(data.map((m: { role: string; content: string; created_at: string }) => ({
         role: m.role as 'user' | 'assistant',
@@ -129,7 +133,7 @@ export default function AIAssistant() {
     e.stopPropagation();
     if (!confirm('确定要删除这个会话吗？')) return;
     try {
-      await fetch(`${API_BASE}/qa/conversations/${id}`, { method: 'DELETE' });
+      await fetch(`${API_BASE}/qa/conversations/${id}`, { method: 'DELETE', headers: authHeaders });
       setConversations(p => p.filter(c => c.id !== id));
       if (currentConversationId === id) {
         setCurrentConversationId(null);
@@ -150,7 +154,7 @@ export default function AIAssistant() {
     try{
       const r=await fetch(`${API_BASE}/qa/chat`,{
         method:'POST',
-        headers:{'Content-Type':'application/json'},
+        headers:{'Content-Type':'application/json', ...authHeaders},
         body:JSON.stringify({query:q,top_k:5,conversation_id:currentConversationId})
       });
       const d=await r.json();
@@ -226,7 +230,7 @@ export default function AIAssistant() {
   const tabs=[{k:'chat',l:'业务问答'},{k:'enforce',l:'执法辅助'},{k:'search',l:'知识检索'},{k:'cross-modal',l:'跨模态检索'}] as const;
 
   return (
-    <div className="space-y-4 max-w-3xl mx-auto">
+    <div className="space-y-4 max-w-6xl mx-auto">
       {toasts.length>0 && <div className="fixed top-4 right-4 z-50 space-y-2">{toasts.map(t=>(<div key={t.id} className={`px-3 py-1.5 rounded-lg shadow text-xs text-white ${t.type==='error'?'bg-red-500':t.type==='warning'?'bg-amber-500':'bg-emerald-500'}`}>{t.message}</div>))}</div>}
 
       <div className="md:flex md:items-center md:justify-between">
@@ -299,7 +303,7 @@ export default function AIAssistant() {
             <div className="flex-1 space-y-3 overflow-y-auto pb-3" style={{maxHeight:'calc(100vh - 380px)'}}>
               {messages.map((m,i)=>(
                 <div key={i} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}>
-                  <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-2.5 ${m.role==='user'?'bg-blue-500 text-white rounded-br-md':'bg-slate-100 text-slate-700 rounded-bl-md'}`}>
+                  <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-4 py-2.5 ${m.role==='user'?'bg-blue-500 text-white rounded-br-md':'bg-slate-100 text-slate-700 rounded-bl-md'}`}>
                     {m.role==='assistant'&&<span className="text-[10px] font-bold text-purple-500 block mb-0.5">AI</span>}
                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.content}</p>
                     <div className="flex items-center justify-between mt-1">
@@ -419,7 +423,7 @@ export default function AIAssistant() {
               {crossLoading?'搜索中...':'跨模态搜索'}
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {crossResults.map((r,i)=>(
               <div key={i} className="card flex items-start gap-3 hover:border-blue-200 cursor-pointer">
                 <div className="w-16 h-16 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">

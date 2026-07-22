@@ -17,8 +17,8 @@ os.makedirs(DOCS_DIR, exist_ok=True)
 
 
 @router.post("/upload", response_model=DocumentResponse)
-async def upload_document(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    logger.info(f"开始处理文档上传: filename={file.filename}, content_type={file.content_type}")
+async def upload_document(file: UploadFile = File(...), category: str = "法规", db: Session = Depends(get_db)):
+    logger.info(f"开始处理文档上传: filename={file.filename}, content_type={file.content_type}, category={category}")
     
     ext = os.path.splitext(file.filename)[1].lower()
     logger.info(f"文件扩展名: {ext}")
@@ -48,7 +48,8 @@ async def upload_document(file: UploadFile = File(...), db: Session = Depends(ge
         filename=file.filename,
         filepath=file_path,
         content=content,
-        file_type=file_type
+        file_type=file_type,
+        category=category
     )
     db.add(db_document)
     db.commit()

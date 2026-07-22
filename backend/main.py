@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
-from app.routes import documents, search, qa, models
+from app.routes import documents, search, qa, models, auth
 from app.database import engine, Base
 
 logging.basicConfig(
@@ -27,6 +27,7 @@ app.include_router(documents.router, prefix="/api/documents", tags=["documents"]
 app.include_router(search.router, prefix="/api/search", tags=["search"])
 app.include_router(qa.router, prefix="/api/qa", tags=["qa"])
 app.include_router(models.router, prefix="/api/models", tags=["models"])
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 
 
 @app.get("/")

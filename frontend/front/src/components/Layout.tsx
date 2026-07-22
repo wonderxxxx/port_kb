@@ -2,9 +2,12 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { AIChatWidget } from './AIChatWidget';
 import { useWebSocket } from '../hooks/useWebSocket';
+import { useAuth } from '../context/AuthContext';
+import { IconUser, IconLogOut } from './Icons';
 
 export function Layout({ children }: { children: ReactNode }) {
   const { data: wsData, connected } = useWebSocket();
+  const { user, logout } = useAuth();
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -37,6 +40,25 @@ export function Layout({ children }: { children: ReactNode }) {
               {wsData && (
                 <div className="flex items-center gap-2 bg-red-50 px-3 py-1.5 rounded-lg">
                   <span className="text-xs text-red-600 font-medium">待处理预警: {wsData.warnings} 条</span>
+                </div>
+              )}
+              {/* User info */}
+              {user && (
+                <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <IconUser className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-slate-700">{user.full_name || user.username}</p>
+                    <p className="text-xs text-slate-400">{user.role}</p>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    title="退出登录"
+                  >
+                    <IconLogOut className="w-4 h-4" />
+                  </button>
                 </div>
               )}
               {/* Time */}

@@ -6,7 +6,8 @@ from app.database import get_db
 from app.schemas import QARequest, QAResponse, ConversationResponse, MessageResponse, ConversationCreate, SendMessageRequest
 from app.routes.search import hybrid_search
 from app.utils.llm_client import call_llm
-from app.models import Conversation, Message
+from app.models import Conversation, Message, User
+from app.routes.auth import get_current_user
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -31,16 +32,18 @@ def get_greeting():
 
 
 @router.get("/conversations", response_model=list[ConversationResponse])
-def get_conversations(db: Session = Depends(get_db)):
-    logger.info("获取会话列表")
-    conversations = db.query(Conversation).order_by(desc(Conversation.updated_at)).all()
+def get_conversations(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    logger.info(f"获取用户会话列表: user_id={current_user.id}")
+    conversations = db.query(Conversation).filter(
+        Conversation.user_id == current_user.id
+    ).order_by(desc(Conversation.updated_at)).all()
     return conversations
 
 
 @router.post("/conversations", response_model=ConversationResponse)
-def create_conversation(request: ConversationCreate, db: Session = Depends(get_db)):
-    logger.info(f"创建新会话: {request.title}")
-    conversation = Conversation(title=request.title)
+def create_conversation(request: ConversationCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    logger.info(f"创建新会话: user_id={current_user.id}, title={request.title}")
+    conversation = Conversation(title=request.title, user_id=current_user.id)
     db.add(conversation)
     db.commit()
     db.refresh(conversation)
@@ -48,9 +51,12 @@ def create_conversation(request: ConversationCreate, db: Session = Depends(get_d
 
 
 @router.get("/conversations/{conversation_id}/messages", response_model=list[MessageResponse])
-def get_messages(conversation_id: int, db: Session = Depends(get_db)):
-    logger.info(f"获取会话消息: conversation_id={conversation_id}")
-    conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+def get_messages(conversation_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    logger.info(f"获取会话消息: user_id={current_user.id}, conversation_id={conversation_id}")
+    conversation = db.query(Conversation).filter(
+        Conversation.id == conversation_id,
+        Conversation.user_id == current_user.id
+    ).first()
     if not conversation:
         raise HTTPException(status_code=404, detail="会话不存在")
     messages = db.query(Message).filter(Message.conversation_id == conversation_id).order_by(Message.created_at).all()
@@ -58,9 +64,12 @@ def get_messages(conversation_id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/conversations/{conversation_id}")
-def delete_conversation(conversation_id: int, db: Session = Depends(get_db)):
-    logger.info(f"删除会话: conversation_id={conversation_id}")
-    conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+def delete_conversation(conversation_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    logger.info(f"删除会话: user_id={current_user.id}, conversation_id={conversation_id}")
+    conversation = db.query(Conversation).filter(
+        Conversation.id == conversation_id,
+        Conversation.user_id == current_user.id
+    ).first()
     if not conversation:
         raise HTTPException(status_code=404, detail="会话不存在")
     
@@ -122,16 +131,19 @@ def qa(request: QARequest, db: Session = Depends(get_db)):
 
 
 @router.post("/chat")
-def chat(request: SendMessageRequest, db: Session = Depends(get_db)):
-    logger.info(f"开始处理聊天请求: query={request.query}, conversation_id={request.conversation_id}")
+def chat(request: SendMessageRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    logger.info(f"开始处理聊天请求: user_id={current_user.id}, query={request.query}, conversation_id={request.conversation_id}")
     
     conversation = None
     if request.conversation_id:
-        conversation = db.query(Conversation).filter(Conversation.id == request.conversation_id).first()
+        conversation = db.query(Conversation).filter(
+            Conversation.id == request.conversation_id,
+            Conversation.user_id == current_user.id
+        ).first()
         if not conversation:
             raise HTTPException(status_code=404, detail="会话不存在")
     else:
-        conversation = Conversation(title=request.query[:30] if len(request.query) > 30 else request.query)
+        conversation = Conversation(title=request.query[:30] if len(request.query) > 30 else request.query, user_id=current_user.id)
         db.add(conversation)
         db.commit()
         db.refresh(conversation)

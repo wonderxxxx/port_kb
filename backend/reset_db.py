@@ -42,6 +42,8 @@ def reset_database():
         cur.execute("CREATE EXTENSION IF NOT EXISTS vector")
 
         print("2. 删除现有表...")
+        cur.execute("DROP TABLE IF EXISTS messages CASCADE")
+        cur.execute("DROP TABLE IF EXISTS conversations CASCADE")
         cur.execute("DROP TABLE IF EXISTS document_chunks CASCADE")
         cur.execute("DROP TABLE IF EXISTS documents CASCADE")
 
@@ -70,9 +72,31 @@ def reset_database():
             )
         """)
 
-        print("5. 创建索引...")
+        print("5. 创建 conversations 表...")
+        cur.execute("""
+            CREATE TABLE conversations (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        print("6. 创建 messages 表...")
+        cur.execute("""
+            CREATE TABLE messages (
+                id SERIAL PRIMARY KEY,
+                conversation_id INTEGER NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+                role VARCHAR(20) NOT NULL,
+                content TEXT NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        print("7. 创建索引...")
         cur.execute("CREATE INDEX idx_document_chunks_document_id ON document_chunks(document_id)")
         cur.execute("CREATE INDEX idx_document_chunks_embedding ON document_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)")
+        cur.execute("CREATE INDEX idx_messages_conversation_id ON messages(conversation_id)")
 
         cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
         tables = [t[0] for t in cur.fetchall()]

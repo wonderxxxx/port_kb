@@ -43,3 +43,34 @@ class QARequest(BaseModel):
 class QAResponse(BaseModel):
     answer: str
     sources: List[SearchResult]
+
+
+class ConversationResponse(BaseModel):
+    id: int
+    title: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class MessageResponse(BaseModel):
+    id: int
+    conversation_id: int
+    role: str
+    content: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class ConversationCreate(BaseModel):
+    title: str = "新会话"
+
+
+class SendMessageRequest(BaseModel):
+    query: str
+    conversation_id: int = None
+    top_k: int = 5

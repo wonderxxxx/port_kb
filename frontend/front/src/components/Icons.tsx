@@ -153,3 +153,18 @@ export function IconFire({ className }: { className?: string }) {
 export function IconRuler({ className }: { className?: string }) {
   return <Icon className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5 7.5 12 3 7.5zm0 0L7.5 12m0 0l4.5 4.5 4.5-4.5m-4.5 4.5V21" /></Icon>;
 }
+
+// Plus
+export function IconPlus({ className }: { className?: string }) {
+  return <Icon className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></Icon>;
+}
+
+// Trash2
+export function IconTrash2({ className }: { className?: string }) {
+  return <Icon className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></Icon>;
+}
+
+// MessageSquare
+export function IconMessageSquare({ className }: { className?: string }) {
+  return <Icon className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></Icon>;
+}

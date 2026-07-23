@@ -56,6 +56,7 @@ def reset_database():
                 filepath VARCHAR(500) NOT NULL,
                 content TEXT,
                 file_type VARCHAR(50),
+                category VARCHAR(50) NOT NULL DEFAULT '法规',
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP WITH TIME ZONE
             )
@@ -116,6 +117,21 @@ def reset_database():
         cur.execute("CREATE INDEX idx_users_username ON users(username)")
         cur.execute("CREATE INDEX idx_users_email ON users(email)")
         cur.execute("CREATE INDEX idx_conversations_user_id ON conversations(user_id)")
+
+        print("9. 创建默认管理员用户...")
+        from passlib.context import CryptContext
+        pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+        hashed_password = pwd_context.hash("admin123")
+        cur.execute("""
+            INSERT INTO users (username, email, hashed_password, full_name, role, created_at, updated_at)
+            VALUES ('admin', 'admin@example.com', %s, '管理员', 'admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            ON CONFLICT (username) DO NOTHING
+        """, (hashed_password,))
+        cur.execute("SELECT username FROM users WHERE username = 'admin'")
+        if cur.fetchone():
+            print("✅ 默认管理员用户已创建/存在")
+        else:
+            print("❌ 默认管理员用户创建失败")
 
         cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
         tables = [t[0] for t in cur.fetchall()]

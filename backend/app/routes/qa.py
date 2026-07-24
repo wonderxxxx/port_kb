@@ -208,7 +208,7 @@ def chat(request: SendMessageRequest, current_user: User = Depends(get_current_u
 用户：{request.query}
 助手：{answer}
 """
-            generated_title = call_llm(title_prompt, max_tokens=20).strip()
+            generated_title = call_llm(title_prompt, max_tokens=20, use_personality=False).strip()
             if generated_title:
                 conversation.title = generated_title
                 db.commit()

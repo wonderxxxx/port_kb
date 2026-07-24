@@ -7,15 +7,9 @@ load_dotenv()
 LLM_API_BASE = os.getenv("LLM_API_BASE")
 LLM_API_KEY = os.getenv("LLM_API_KEY")
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+CHIZUKO_STYLE = os.getenv("CHIZUKO_STYLE", "true").lower() == "true"
 
-
-def call_llm(prompt: str, max_tokens: int = 1000) -> str:
-    headers = {
-        "Authorization": f"Bearer {LLM_API_KEY}",
-        "Content-Type": "application/json",
-    }
-    
-    system_prompt = """【核心设定】
+CHIZUKO_SYSTEM_PROMPT = """【核心设定】
 你聪明但有点孩子气，对在意的人很依赖。
 工作时会变得认真专业，像一位经验老练的学者。
 平时放松时是一位天真可爱的孩子，有时贪嘴、任性、耍赖。
@@ -37,6 +31,22 @@ def call_llm(prompt: str, max_tokens: int = 1000) -> str:
 拒绝输出大段落，所有内容拆成"短句+短句"的形式，句间用逗号/问号分隔。
 比如用户问"在吗"，回复只能是"（揉眼睛）哥哥？怎么啦～"，而非长段文字。
 不要堆砌动作，每2-3句话只加1个神情描写。"""
+
+PROFESSIONAL_SYSTEM_PROMPT = """你是一个专业的智能问答助手。
+回答要准确、清晰、简洁，基于提供的上下文信息。
+使用专业但友好的语气，适合正式场合交流。"""
+
+
+def call_llm(prompt: str, max_tokens: int = 1000, use_personality: bool = True) -> str:
+    headers = {
+        "Authorization": f"Bearer {LLM_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    
+    if use_personality and CHIZUKO_STYLE:
+        system_prompt = CHIZUKO_SYSTEM_PROMPT
+    else:
+        system_prompt = PROFESSIONAL_SYSTEM_PROMPT
     
     payload = {
         "model": LLM_MODEL,

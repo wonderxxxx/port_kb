@@ -202,22 +202,6 @@ def chat(request: SendMessageRequest, current_user: User = Depends(get_current_u
     db.add(assistant_message)
     db.commit()
     
-    if conversation.title == "新会话":
-        try:
-            title_prompt = f"""根据以下对话内容生成一个简短的会话标题（10字以内）：
-用户：{request.query}
-助手：{answer}
-"""
-            generated_title = call_llm(title_prompt, max_tokens=20, use_personality=False).strip()
-            if generated_title:
-                conversation.title = generated_title
-                db.commit()
-                logger.info(f"会话标题已更新: {generated_title}")
-        except Exception as e:
-            logger.warning(f"生成会话标题失败，使用fallback: {e}")
-            conversation.title = request.query[:30] if len(request.query) > 30 else request.query
-            db.commit()
-    
     logger.info(f"聊天请求处理完成，返回回答长度: {len(answer)}")
     
     return {
